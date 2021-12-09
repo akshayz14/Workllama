@@ -5,11 +5,12 @@ import com.example.wassignment.models.Content
 import com.example.wassignment.remote.ContactsService
 import retrofit2.HttpException
 import java.io.IOException
+import javax.inject.Inject
 
 private const val STARTING_PAGE_INDEX = 1
 
 
-class ContactsPagingSource(
+class ContactsPagingSource @Inject constructor(
     private val contactsService: ContactsService,
 ) :
     PagingSource<Int, Content>() {

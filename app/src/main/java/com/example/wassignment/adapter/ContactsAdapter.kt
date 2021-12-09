@@ -5,13 +5,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.navigation.Navigation
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.example.wassignment.ContactDetailsFragment
 import com.example.wassignment.ContactListFragmentDirections
 import com.example.wassignment.R
 import com.example.wassignment.models.Content
@@ -22,13 +20,11 @@ import com.example.wassignment.utils.DiffUtilCallback
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import androidx.recyclerview.widget.DividerItemDecoration
 
 
-
-
-class ContactsAdapter :
+class ContactsAdapter() :
     PagingDataAdapter<Content, ContactsAdapter.ContactsViewHolder>(DiffUtilCallback()) {
+
 
     override fun onBindViewHolder(holder: ContactsViewHolder, position: Int) {
         getItem(position)?.let { holder.bindPost(it) }
@@ -68,8 +64,8 @@ class ContactsAdapter :
                 ivFavouriteGray.setOnClickListener {
                     CoroutineScope(Dispatchers.IO).launch {
                         contactsService.postStar(content.id)
-                        content.isStarred = 1
                     }
+                    content.isStarred = 1
                     ivFavouriteGray.visibility = View.GONE
                     ivFavouriteRed.visibility = View.VISIBLE
                 }
@@ -77,20 +73,23 @@ class ContactsAdapter :
                 ivFavouriteRed.setOnClickListener {
                     CoroutineScope(Dispatchers.IO).launch {
                         contactsService.postUnStar(content.id)
-                        content.isStarred = 0
                     }
+                    content.isStarred = 0
                     ivFavouriteGray.visibility = View.VISIBLE
                     ivFavouriteRed.visibility = View.GONE
                 }
 
                 Glide.with(ivSmallImage.context)
                     .load(Config.BASE_URL + content.thumbnail)
-                    .error(R.drawable.ic_launcher_background)
+                    .error(R.drawable.ic_error)
                     .apply(RequestOptions.circleCropTransform())
                     .into(ivSmallImage)
 
                 itemView.setOnClickListener {
-                    val action = ContactListFragmentDirections.actionContactListFragmentToContactDetailsFragment(content)
+                    val action =
+                        ContactListFragmentDirections.actionContactListFragmentToContactDetailsFragment(
+                            content
+                        )
                     Navigation.findNavController(itemView).navigate(action);
                 }
             }

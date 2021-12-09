@@ -12,19 +12,23 @@ import com.example.wassignment.databinding.FragmentContactDetailsBinding
 import com.example.wassignment.remote.ContactsClient
 import com.example.wassignment.remote.ContactsService
 import com.example.wassignment.utils.Config
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
+@AndroidEntryPoint
 class ContactDetailsFragment : Fragment() {
 
     private val args: ContactDetailsFragmentArgs by navArgs()
     private var _binding: FragmentContactDetailsBinding? = null
     private val binding: FragmentContactDetailsBinding
         get() = _binding!!
-    private val contactsService = ContactsClient.getClient().create(ContactsService::class.java)
 
+    @Inject
+    lateinit var contactsService: ContactsService
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,6 +59,7 @@ class ContactDetailsFragment : Fragment() {
                 CoroutineScope(Dispatchers.IO).launch {
                     contactsService.postStar(itemArgument.id)
                 }
+                itemArgument.isStarred = 1
                 binding.ivHeartGray.visibility = View.GONE
                 binding.ivHeartRed.visibility = View.VISIBLE
             }
@@ -63,6 +68,7 @@ class ContactDetailsFragment : Fragment() {
                 CoroutineScope(Dispatchers.IO).launch {
                     contactsService.postUnStar(itemArgument.id)
                 }
+                itemArgument.isStarred = 0
                 binding.ivHeartGray.visibility = View.VISIBLE
                 binding.ivHeartRed.visibility = View.GONE
             }
@@ -73,7 +79,7 @@ class ContactDetailsFragment : Fragment() {
 
             Glide.with(binding.ivProfileImage.context)
                 .load(Config.BASE_URL + itemArgument.thumbnail)
-                .error(R.drawable.ic_launcher_background)
+                .error(R.drawable.ic_error)
                 .apply(RequestOptions.circleCropTransform())
                 .into(binding.ivProfileImage)
         }

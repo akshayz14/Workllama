@@ -9,11 +9,12 @@ import com.example.wassignment.models.Content
 import com.example.wassignment.remote.ContactsClient
 import com.example.wassignment.remote.ContactsService
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
 const val NETWORK_START_INDEX = 10
 
-class ContactsRepository(context: Context) {
-    private val contactsService = ContactsClient.getClient().create(ContactsService::class.java)
+class ContactsRepository @Inject constructor(private val contactsService: ContactsService) {
+//    private val contactsService = ContactsClient.getClient().create(ContactsService::class.java)
 
     @OptIn(ExperimentalPagingApi::class)
     fun fetchPosts(): Flow<PagingData<Content>> {

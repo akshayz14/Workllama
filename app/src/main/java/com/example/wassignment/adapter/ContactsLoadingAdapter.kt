@@ -28,7 +28,6 @@ class ContactsLoadingAdapter(private val retry: () -> Unit):
             }
         }
 
-
         fun bindState(loadState: LoadState) {
             if (loadState is LoadState.Error) {
                 tvErrorMessage.text = loadState.error.localizedMessage
